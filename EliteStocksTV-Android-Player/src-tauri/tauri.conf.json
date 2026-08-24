@@ -32,7 +32,9 @@
   "bundle": {
     "active": true,
     "icon": [
-      "icons/icon.svg"
+      "icons/icon.png",
+      "icons/icon.ico",
+      "icons/icon.icns"
     ],
     "category": "Entertainment",
     "shortDescription": "EliteStocks TV IPTV player",
