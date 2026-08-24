@@ -85,14 +85,25 @@ jobs:
             sed -i 's/android:usesCleartextTraffic="[^"]*"/android:usesCleartextTraffic="true"/' "$MANIFEST"
           fi
 
-      - name: Build APK
+      - name: Optimize Rust release build
         run: |
-          npx tauri android build --apk --debug
+          cat >> src-tauri/Cargo.toml <<EOF
+
+          [profile.release]
+          strip = true
+          opt-level = "z"
+          lto = true
+          codegen-units = 1
+          EOF
+
+      - name: Build Release APK
+        run: |
+          npx tauri android build --apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: EliteStocksTV-Android-${{ github.sha }}
+          name: EliteStocksTV-Android-release-${{ github.sha }}
           path: |
             EliteStocksTV-Android-Player/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
