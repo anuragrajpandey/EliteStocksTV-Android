@@ -51,14 +51,11 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> $GITHUB_ENV
 
-      - name: Setup Rust
+      - name: Setup Rust ARM64 only
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: |
             aarch64-linux-android
-            armv7-linux-androideabi
-            i686-linux-android
-            x86_64-linux-android
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -96,14 +93,14 @@ jobs:
           codegen-units = 1
           EOF
 
-      - name: Build Release APK
+      - name: Build ARM64 Release APK
         run: |
           npx tauri android build --apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: EliteStocksTV-Android-release-${{ github.sha }}
+          name: EliteStocksTV-Android-arm64-${{ github.sha }}
           path: |
             EliteStocksTV-Android-Player/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
