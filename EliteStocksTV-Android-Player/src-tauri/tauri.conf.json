@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "EliteStocks TV",
+  "version": "1.0.0",
+  "identifier": "in.elitestocks.tv",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "EliteStocks TV",
+        "width": 412,
+        "height": 915,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "capabilities": ["default"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["apk", "aab"],
+    "category": "Entertainment",
+    "shortDescription": "EliteStocks TV IPTV player",
+    "longDescription": "A clean, fast IPTV player for authorized Xtream Codes subscriptions.",
+    "android": {
+      "minSdkVersion": 24
+    }
+  },
+  "plugins": {
+    "http": {
+      "maxRedirections": 5
+    }
+  }
+}
