@@ -3,12 +3,14 @@
   "productName": "EliteStocks TV",
   "version": "1.0.0",
   "identifier": "in.elitestocks.tv",
+
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
+
   "app": {
     "windows": [
       {
@@ -26,12 +28,17 @@
       ]
     }
   },
+
   "bundle": {
     "active": true,
+    "icon": [
+      "icons/icon.svg"
+    ],
     "category": "Entertainment",
     "shortDescription": "EliteStocks TV IPTV player",
     "longDescription": "A clean, fast IPTV player for authorized Xtream Codes subscriptions."
   },
+
   "plugins": {
     "http": {
       "maxRedirections": 5
