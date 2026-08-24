@@ -27,7 +27,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -49,8 +48,8 @@ jobs:
             "build-tools;35.0.0" \
             "ndk;27.2.12479018"
 
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
-          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> $GITHUB_ENV
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -67,14 +66,14 @@ jobs:
           workspaces: |
             EliteStocksTV-Android-Player/src-tauri -> EliteStocksTV-Android-Player/src-tauri/target
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Initialize Tauri Android
         run: |
           npx tauri android init
 
-      - name: Enable HTTP IPTV providers
+      - name: Enable HTTP IPTV streams
         run: |
           MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
 
