@@ -21,18 +21,16 @@
       }
     ],
     "security": {
-      "capabilities": ["default"]
+      "capabilities": [
+        "default"
+      ]
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["apk", "aab"],
     "category": "Entertainment",
     "shortDescription": "EliteStocks TV IPTV player",
-    "longDescription": "A clean, fast IPTV player for authorized Xtream Codes subscriptions.",
-    "android": {
-      "minSdkVersion": 24
-    }
+    "longDescription": "A clean, fast IPTV player for authorized Xtream Codes subscriptions."
   },
   "plugins": {
     "http": {
