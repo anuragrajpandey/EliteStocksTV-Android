@@ -11,6 +11,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Show repository structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Repository files:"
+          ls -la
+          echo "Looking for package.json:"
+          find . -maxdepth 3 -name package.json -print
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -23,11 +32,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Add Rust Android target
         run: rustup target add aarch64-linux-android
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Initialize Android
         run: npm run tauri android init
@@ -37,7 +46,7 @@ jobs:
 
       - name: Find APK
         run: |
-          echo "Searching for APK files..."
+          echo "APK files:"
           find src-tauri/gen/android -type f -name "*.apk" -print
 
       - name: Upload APK
