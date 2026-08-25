@@ -1,107 +1,46 @@
-name: Build EliteStocks TV Android APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "EliteStocksTV-Android-Player/**"
-      - ".github/workflows/android.yml"
-
-permissions:
-  contents: read
 
 jobs:
-  build-android:
+  android:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: EliteStocksTV-Android-Player
+        working-directory: BluetoothBaba
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Java / JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: EliteStocksTV-Android-Player/package-lock.json
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK packages
-        run: |
-          yes | sdkmanager --licenses >/dev/null || true
-
-          sdkmanager \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0" \
-            "ndk;27.2.12479018"
-
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/27.2.12479018" >> $GITHUB_ENV
-
-      - name: Setup Rust ARM64 only
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: |
-            aarch64-linux-android
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            EliteStocksTV-Android-Player/src-tauri -> EliteStocksTV-Android-Player/src-tauri/target
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Generate Tauri icons
+      - name: Add Rust Android target
         run: |
-          npx tauri icon src-tauri/icons/icon.svg
+          rustup target add aarch64-linux-android
 
-      - name: Initialize Tauri Android
-        run: |
-          npx tauri android init
+      - name: Initialize Android
+        run: npm run tauri android init
 
-      - name: Enable HTTP IPTV streams
-        run: |
-          MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
-
-          if [ -f "$MANIFEST" ]; then
-            sed -i 's/android:usesCleartextTraffic="[^"]*"/android:usesCleartextTraffic="true"/' "$MANIFEST"
-          fi
-
-      - name: Optimize Rust release build
-        run: |
-          cat >> src-tauri/Cargo.toml <<EOF
-
-          [profile.release]
-          strip = true
-          opt-level = "z"
-          lto = true
-          codegen-units = 1
-          EOF
-
-      - name: Build ARM64 Release APK
-        run: |
-          npx tauri android build --apk
+      - name: Build Debug APK
+        run: npm run tauri android build -- --debug --apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: EliteStocksTV-Android-arm64-${{ github.sha }}
-          path: |
-            EliteStocksTV-Android-Player/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
-          if-no-files-found: error
-          retention-days: 14
+          name: MeshChat-Debug-APK
+          path: BluetoothBaba/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
