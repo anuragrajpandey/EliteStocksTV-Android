@@ -7,10 +7,6 @@ jobs:
   android:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: BluetoothBaba
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,6 +15,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -30,8 +27,7 @@ jobs:
         run: npm install
 
       - name: Add Rust Android target
-        run: |
-          rustup target add aarch64-linux-android
+        run: rustup target add aarch64-linux-android
 
       - name: Initialize Android
         run: npm run tauri android init
@@ -39,8 +35,14 @@ jobs:
       - name: Build Debug APK
         run: npm run tauri android build -- --debug --apk
 
+      - name: Find APK
+        run: |
+          echo "Searching for APK files..."
+          find src-tauri/gen/android -type f -name "*.apk" -print
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MeshChat-Debug-APK
-          path: BluetoothBaba/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          name: EliteStocksTV-Debug-APK
+          path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
