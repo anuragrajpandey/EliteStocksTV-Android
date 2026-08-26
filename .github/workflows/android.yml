@@ -7,24 +7,26 @@ jobs:
   android:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: EliteStocksTV-Android-Player
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Show repository structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Repository files:"
-          ls -la
-          echo "Looking for package.json:"
-          find . -maxdepth 3 -name package.json -print
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: EliteStocksTV-Android-Player/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -36,13 +38,13 @@ jobs:
         run: rustup target add aarch64-linux-android
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Initialize Android
-        run: npm run tauri android init
+        run: npm run android:init
 
       - name: Build Debug APK
-        run: npm run tauri android build -- --debug --apk
+        run: npm run android:build -- --debug
 
       - name: Find APK
         run: |
@@ -53,5 +55,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: EliteStocksTV-Debug-APK
-          path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          path: EliteStocksTV-Android-Player/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
