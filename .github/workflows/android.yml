@@ -40,6 +40,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Create temporary app icon
+        run: |
+          mkdir -p src-tauri/icons
+
+          convert -size 1024x1024 xc:"#111111" \
+            -gravity center \
+            -fill white \
+            -pointsize 180 \
+            -font DejaVu-Sans-Bold \
+            -annotate +0+0 "ESTV" \
+            src-tauri/icons/icon.png
+
       - name: Initialize Android
         run: npm run android:init
 
